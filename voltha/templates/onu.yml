@@ -32,7 +32,7 @@ metadata:
   name: onu
   namespace: {{ .Values.global.namespace }}
 spec:
-   replicas: 1
+   replicas: {{ .Values.replicas.onu }}
    template:
      metadata:
        labels:

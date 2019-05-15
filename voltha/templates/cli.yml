@@ -33,7 +33,7 @@ metadata:
   name: vcli
   namespace: {{ .Values.global.namespace }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicas.vcli }}
   template:
     metadata:
       labels:

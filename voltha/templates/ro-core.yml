@@ -18,7 +18,7 @@ metadata:
   name: ro-core
   namespace: {{ .Values.global.namespace }}
 spec:
-#  clusterIP: None
+  clusterIP: None
   ports:
     - name: grpc
       port: 50057
@@ -32,7 +32,7 @@ metadata:
   name: ro-core
   namespace: {{ .Values.global.namespace }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicas.ro_core }}
   selector:
     matchLabels:
       app: ro-core

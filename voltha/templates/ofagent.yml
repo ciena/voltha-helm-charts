@@ -4,7 +4,7 @@ metadata:
   name: ofagent
   namespace: {{ .Values.global.namespace }}
 spec:
-  replicas: 3
+  replicas: {{ .Values.replicas.ofagent }}
   template:
     metadata:
       labels:

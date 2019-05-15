@@ -11,14 +11,20 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+{{- $root := . -}}
+{{- $pair_count := .Values.rw_core.pairs | int }}
+{{- $tag := tpl .Values.images.rw_core.tag . }}
+{{- range $i, $e := until $pair_count }}
+{{- $pair_idx := add $i 1 }}
+---
 apiVersion: v1
 kind: Service
 metadata:
-  name: rw-core1
-  namespace: {{ .Values.global.namespace }}
+  name: rw-core{{ $pair_idx }}
+  namespace: {{ $root.Values.global.namespace }}
+  serviceAccountName: {{ $root.Values.global.namespace }}-serviceaccount
 spec:
-#  clusterIP: None
+  clusterIP: None
   ports:
     - name: grpc
       port: 50057
@@ -29,10 +35,11 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: rw-core1
-  namespace: {{ .Values.global.namespace }}
+  name: rw-core{{ $pair_idx }}
+  namespace: {{ $root.Values.global.namespace }}
+  serviceAccountName: {{ $root.Values.global.namespace }}-serviceaccount
 spec:
-  replicas: 1
+  replicas: {{ $root.Values.replicas.rw_core }}
   selector:
     matchLabels:
       app: rw-core
@@ -45,8 +52,8 @@ spec:
     spec:
       containers:
         - name: voltha
-          image: {{ .Values.global.registry }}{{ .Values.images.rw_core.repository }}:{{ tpl .Values.images.rw_core.tag . }}
-          imagePullPolicy: {{ .Values.images.rw_core.pullPolicy }}
+          image: {{ $root.Values.global.registry }}{{ $root.Values.images.rw_core.repository }}:{{ $tag }}
+          imagePullPolicy: {{ $root.Values.images.rw_core.pullPolicy }}
           env:
             - name: NAMESPACE
               valueFrom:
@@ -56,30 +63,15 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: status.podIP
+            - name: RW_CORE_INSTANCE_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
           args:
-            - "/app/rw_core"
-            - "-instance-id=rw-core1"
-            - "-kv_store_type=etcd"
-            - "-kv_store_host=etcd.$(NAMESPACE).svc.cluster.local"
-            - "-kv_store_port=2379"
-            - "-grpc_host=$(POD_IP)"
-            - "-grpc_port=50057"
-            - "-banner=true"
-            - "-kafka_adapter_host=kafka.$(NAMESPACE).svc.cluster.local"
-            - "-kafka_adapter_port=9092"
-            - "-kafka_cluster_host=kafka.$(NAMESPACE).svc.cluster.local"
-            - "-kafka_cluster_port=9092"
-            - "-rw_core_topic=rwcore"
-            - "-kv_store_data_prefix=service/voltha"
-            - "-in_competing_mode=true"
-            - "-timeout_long_request=8000"
-            - "-timeout_request=6000"
-            - "-log_level=4"
+{{ toYaml $root.Values.rw_core_args | indent 12 }}
           ports:
             - containerPort: 50057
               name: grpc-port
-      nodeSelector:
-        nodename: compute1
-
-
-
+#      nodeSelector:
+#        nodename: k8s1
+{{- end }}

@@ -32,7 +32,7 @@ metadata:
   name: afrouter
   namespace: {{ .Values.global.namespace }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicas.afrouter }}
   template:
     metadata:
       labels:

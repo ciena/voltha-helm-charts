@@ -30,7 +30,7 @@ metadata:
   name: adapter-simulated-olt
   namespace: {{ .Values.global.namespace }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicas.adapter_simulated_olt }}
   selector:
     matchLabels:
       app: adapter-simulated-olt
@@ -81,7 +81,7 @@ metadata:
   name: adapter-simulated-onu
   namespace: {{ .Values.global.namespace }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicas.adapter_simulated_onu }}
   selector:
     matchLabels:
       app: adapter-simulated-onu

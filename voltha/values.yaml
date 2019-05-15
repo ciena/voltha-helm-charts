@@ -17,16 +17,19 @@ rw_core:
   pairs: 2
 
 ro_core:
-  pairs: 2
+  pairs: 1
 
 replicas:
   vcli: 1
-  ofagent: 1
+  ofagent: 3
   rw_core: 1
   ro_core: 1
   afrouter: 1
   afrouterd: 1
   onos: 1
+  adapter_simulated_olt: 1
+  adapter_simulated_onu: 1
+  onu: 1
 #  netconf: 0
 #  envoy_for_etcd: 1
 #  alarm_generator: 1

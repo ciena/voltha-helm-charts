@@ -32,6 +32,11 @@ etcd:
   service: etcd-cluster-client.default.svc.cluster.local
   port: 2379
 
+# Define controller to which to connect
+controller:
+  service: onos-openflow.default.svc.cluster.local
+  port: 6653
+
 # WIP Define the number of read/write core pairs
 rw_core:
   pairs: 2
@@ -44,7 +49,7 @@ ro_core:
 # Define the recplica count for everything
 replicas:
   vcli: 1
-  ofagent: 3
+  ofagent: 1
   rw_core: 1
   ro_core: 1
   afrouter: 1

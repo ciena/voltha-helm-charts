@@ -90,11 +90,6 @@ images:
     pullPolicy: 'Always'
     restartPolicy: 'Always'
 
-  envoy:
-    repository: 'volthacore/voltha-envoy'
-    tag: '{{ .Chart.AppVersion }}'
-    pullPolicy: 'Always'
-
   adapter_simulated_olt:
     repository: 'volthacore/voltha-adapter-simulated-olt'
     tag: '{{ .Chart.AppVersion }}'
@@ -119,13 +114,6 @@ images:
 vcli_args:
 - "/voltha/python/cli/setup.sh"
 - "-g afrouter.$(NAMESPACE).svc.cluster.local:55555"
-
-envoy_args:
-- "/usr/local/bin/envoyd"
-- "-envoy-config=/envoy/config/voltha-grpc-proxy.json"
-- "-kv=etcd"
-- "-kv-svc-name=$(ETCD_NAME)"
-- "-kv-port=2379"
 
 ofagent_args:
 - "/ofagent/ofagent/main.py"

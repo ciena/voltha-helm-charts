@@ -56,15 +56,6 @@ spec:
         - containerPort: 55555
         command: ["/app/afrouter"]
         args: ["-config", "/app/config/arouter.voltha.json"]
-      - name: envoy
-        image: {{ .Values.global.registry }}{{ .Values.images.envoy.repository }}:{{ tpl .Values.images.envoy.tag . }}
-        imagePullPolicy: {{ .Values.images.envoy.pullPolicy }}
-        volumeMounts:
-        - name: config-volume
-          mountPath: /envoy/config
-        ports:
-        - containerPort: 8192
-        - containerPort: 50555
       - name: arouterd
         image: {{ .Values.global.registry }}{{ .Values.images.afrouterd.repository }}:{{ tpl .Values.images.afrouterd.tag . }}
         imagePullPolicy: {{ .Values.images.afrouterd.pullPolicy }}

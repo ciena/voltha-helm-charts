@@ -56,7 +56,6 @@ replicas:
   afrouterd: 1
   adapter_simulated_olt: 1
   adapter_simulated_onu: 1
-  onos: 1
   onu: 1
 
 node_ports:
@@ -105,67 +104,7 @@ images:
     tag: '{{ .Chart.AppVersion }}'
     pullPolicy: 'Always'
 
-  onos:
-    repository: 'volthacore/voltha-onos'
-    tag: '1.13.5'
-    pullPolicy: 'Always'
-
   ponsim:
     repository: 'volthacore/voltha-ponsim'
     tag: '{{ .Chart.AppVersion }}'
     pullPolicy: 'Always'
-
-# WIP Define command line arguments for each container
-vcli_args:
-- "/voltha/python/cli/setup.sh"
-- "-g afrouter.$(NAMESPACE).svc.cluster.local:55555"
-
-ofagent_args:
-- "/ofagent/ofagent/main.py"
-- "-v"
-- "--consul=consul.$(NAMESPACE).svc.cluster.local:8500"
-- "--controller=onos.$(NAMESPACE).svc.cluster.local:6653"
-- "--grpc-endpoint=afrouter.$(NAMESPACE).svc.cluster.local:55555"
-- "--enable-tls"
-- "--key-file=/ofagent/pki/voltha.key"
-- "--cert-file=/ofagent/pki/voltha.crt"
-
-ro_core_args:
-- "/app/ro_core"
-- "-kv_store_type=etcd"
-- "-kv_store_host=$(ETCD_SERVICE)"
-- "-kv_store_port=$(ETCD_SERVICE_PORT)"
-- "-grpc_host=$(POD_IP)"
-- "-grpc_port=50057"
-- "-banner=true"
-- "-ro_core_topic=rocore"
-- "-log_level=0"
-
-rw_core_args:
-- "/app/rw_core"
-- "-instance-id=$(RW_CORE_INSTANCE_ID)"
-- "-kv_store_type=etcd"
-- "-kv_store_host=$(ETCD_SERVICE)"
-- "-kv_store_port=$(ETCD_SERVICE_PORT)"
-- "-grpc_host=$(POD_IP)"
-- "-grpc_port=50057"
-- "-banner=true"
-- "-kafka_adapter_host=$(ADAPTER_KAFKA_SERVICE)"
-- "-kafka_adapter_port=$(ADAPTER_KAFKA_SERVICE_PORT)"
-- "-kafka_cluster_host=$(CLUSTER_KAFKA_SERVICE)"
-- "-kafka_cluster_port=$(CLUSTER_KAFKA_SERVICE_PORT)"
-- "-rw_core_topic=rwcore"
-- "-kv_store_data_prefix=service/voltha"
-- "-in_competing_mode=true"
-- "-timeout_long_request=8000"
-- "-timeout_request=6000"
-- "-log_level=0"
-
-afrouter_args:
-- "/app/afrouter"
-- "-config"
-- "/app/config/arouter.voltha.json"
-
-afrouterd_args:
-- "/app/arouterd"
-

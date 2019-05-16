@@ -1,3 +1,5 @@
+{{- if .Values.etcdNodePort -}}
+---
 # Copyright 2017-present Open Networking Foundation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -11,14 +13,18 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-apiVersion: "etcd.database.coreos.com/v1beta2"
-kind: "EtcdCluster"
+
+apiVersion: v1
+kind: Service
 metadata:
-  name: etcd
-  namespace: {{ .Values.global.namespace }}
+  name: {{ .Values.clusterName }}-external
 spec:
-  size: 3
-  version: "3.3.12"
-  pod:
-    annotations:
-      cni: "calico"
+  type: NodePort
+  ports:
+    - port: 2379
+      targetPort: 2379
+      nodePort: {{ .Values.etcdNodePort }}
+      protocol: TCP
+  selector:
+    app: "etcd"
+{{- end -}}

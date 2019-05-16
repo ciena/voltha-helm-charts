@@ -11,15 +11,20 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-apiVersion: rbac.authorization.k8s.io/v1beta1
-kind: ClusterRoleBinding
+
+apiVersion: "etcd.database.coreos.com/v1beta2"
+kind: "EtcdCluster"
 metadata:
-  name: etcd-operator
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: etcd-operator
-subjects:
-- kind: ServiceAccount
-  name: default
-  namespace: {{ .Values.global.namespace }}
+  name: {{ quote .Values.clusterName }}
+spec:
+  size: {{ .Values.clusterSize }}
+  pod:
+    resources:
+      limits:
+        memory: {{ .Values.memoryLimit }}
+    etcdEnv:
+    - name: ETCD_AUTO_COMPACTION_RETENTION
+      value: {{ quote .Values.autoCompactionRetention }}
+    busyboxImage: {{ .Values.global.registry }}{{ .Values.images.busybox.repository }}:{{ tpl .Values.images.busybox.tag . }}
+  version: {{ tpl .Values.images.etcd.tag . }}
+  repository: {{ .Values.global.registry }}{{ .Values.images.etcd.repository }}

@@ -1,4 +1,4 @@
-# Copyright 2017-present Open Networking Foundation
+# Copyright 2019-present Open Networking Foundation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -68,28 +68,7 @@ data:
                   "CreateDevice"
                 ],
                 "_TODO": "Overrides not implemented yet, config ignored",
-                "overrides": [
-                  {
-                    "methods": [
-                      "abc",
-                      "def"
-                    ],
-                    "routing_field": "id"
-                  },
-                  {
-                    "methods": [
-                      "ghi",
-                      "jkl"
-                    ]
-                  },
-                  {
-                    "method": "mno",
-                    "routing_field": "id"
-                  },
-                  {
-                    "method": "pqr"
-                  }
-                ]
+                "overrides": [ ]
               },
               {
                 "name": "read_only",
@@ -149,28 +128,7 @@ data:
                   "ListLogicalDevicePorts"
                 ],
                 "_TODO": "Overrides not implemented yet, config ignored",
-                "overrides": [
-                  {
-                    "methods": [
-                      "abc",
-                      "def"
-                    ],
-                    "routing_field": "id"
-                  },
-                  {
-                    "methods": [
-                      "ghi",
-                      "jkl"
-                    ]
-                  },
-                  {
-                    "method": "mno",
-                    "routing_field": "id"
-                  },
-                  {
-                    "method": "pqr"
-                  }
-                ]
+                "overrides": [ ]
               }
             ]
           }
@@ -465,3 +423,4 @@ kind: ConfigMap
 metadata:
   name: afrouter-config
   namespace: {{ .Values.global.namespace }}
+  serviceAccountName: {{ .Values.global.namespace }}-serviceaccount

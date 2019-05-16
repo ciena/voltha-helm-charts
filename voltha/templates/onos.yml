@@ -1,11 +1,14 @@
 apiVersion: v1
 kind: Service
 metadata:
-   name: onos
-   namespace: {{ .Values.global.namespace }}
-   labels:
-     name: onos
+  name: onos
+  namespace: {{ .Values.global.namespace }}
+  serviceAccountName: {{ .Values.global.namespace }}-serviceaccount
+  labels:
+    name: onos
 spec:
+  namespace: {{ .Values.global.namespace }}
+  serviceAccountName: {{ .Values.global.namespace }}-serviceaccount
   ports:
     - name: ssh
       port: 8101
@@ -24,6 +27,7 @@ kind: Deployment
 metadata:
   name: onos
   namespace: {{ .Values.global.namespace }}
+  serviceAccountName: {{ .Values.global.namespace }}-serviceaccount
 spec:
   replicas: {{ .Values.replicas.onos }}
   template:
@@ -33,6 +37,8 @@ spec:
       annotations:
         cni: "calico"
     spec:
+      namespace: {{ .Values.global.namespace }}
+      serviceAccountName: {{ .Values.global.namespace }}-serviceaccount
       containers:
         - name: onos
           image: {{ .Values.global.registry }}{{ .Values.images.onos.repository }}:{{ tpl .Values.images.onos.tag . }}

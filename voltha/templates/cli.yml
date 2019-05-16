@@ -1,4 +1,4 @@
-# Copyright 2017-present Open Networking Foundation
+# Copyright 2019-present Open Networking Foundation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,9 +17,12 @@ kind: Service
 metadata:
   name: vcli
   namespace: {{ .Values.global.namespace }}
+  serviceAccountName: {{ .Values.global.namespace }}-serviceaccount
   labels:
     name: vcli
 spec:
+  namespace: {{ .Values.global.namespace }}
+  serviceAccountName: {{ .Values.global.namespace }}-serviceaccount
   ports:
     - name: ssh
       port: 5022
@@ -32,6 +35,7 @@ kind: Deployment
 metadata:
   name: vcli
   namespace: {{ .Values.global.namespace }}
+  serviceAccountName: {{ .Values.global.namespace }}-serviceaccount
 spec:
   replicas: {{ .Values.replicas.vcli }}
   template:
@@ -41,6 +45,8 @@ spec:
       annotations:
         cni: "calico"
     spec:
+      namespace: {{ .Values.global.namespace }}
+      serviceAccountName: {{ .Values.global.namespace }}-serviceaccount
       containers:
         - name: vcli
           image: {{ .Values.global.registry }}{{ .Values.images.vcli.repository }}:{{ tpl .Values.images.vcli.tag . }}

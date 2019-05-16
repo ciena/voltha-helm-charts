@@ -3,6 +3,7 @@ kind: Deployment
 metadata:
   name: ofagent
   namespace: {{ .Values.global.namespace }}
+  serviceAccountName: {{ .Values.global.namespace }}-serviceaccount
 spec:
   replicas: {{ .Values.replicas.ofagent }}
   template:
@@ -13,6 +14,8 @@ spec:
         cni: "calico"
     spec:
       terminationGracePeriodSeconds: 10
+      namespace: {{ .Values.global.namespace }}
+      serviceAccountName: {{ .Values.global.namespace }}-serviceaccount
       containers:
       - name: ofagent
         image: {{ .Values.global.registry }}{{ .Values.images.ofagent.repository }}:{{ tpl .Values.images.ofagent.tag . }}

@@ -1,5 +1,5 @@
 ---
-# Copyright 2017-present Open Networking Foundation
+# Copyright 2019-present Open Networking Foundation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,12 +13,35 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Globally define a namespace and registry
+global:
+  namespace: voltha
+  registry: ''
+
+# Define connectivity to Kafka
+kafka:
+  adapter:
+    service: cord-kafka.default.svc.cluster.local
+    port: 9092
+  cluster:
+    service: cord-kafka.default.svc.cluster.local
+    port: 9092
+
+# Define connectivity to etcd
+etcd:
+  service: etcd-cluster-client.default.svc.cluster.local
+  port: 2379
+
+# WIP Define the number of read/write core pairs
 rw_core:
   pairs: 2
 
+# WIP Define the number of read-only core pairs
+# (Why are these pairs and not just replicas)
 ro_core:
   pairs: 1
 
+# Define the recplica count for everything
 replicas:
   vcli: 1
   ofagent: 3
@@ -26,143 +49,73 @@ replicas:
   ro_core: 1
   afrouter: 1
   afrouterd: 1
-  onos: 1
   adapter_simulated_olt: 1
   adapter_simulated_onu: 1
+  onos: 1
   onu: 1
-#  netconf: 0
-#  envoy_for_etcd: 1
-#  alarm_generator: 1
 
 node_ports:
   vcli_port: 30110
 
-# services:
-#   envoy:
-#     serviceType: NodePort
-#     serviceInfo:
-#       ports:
-#         - name: mystery
-#           port: 8001
-#           targetPort: 8001
-#         - name: mystery2
-#           port: 8443
-#           targetPort: 8443
-#           nodePort: 32443
-#         - name: grpc
-#           port: 50555
-#           targetPort: 50555
-# 
-# etcd:
-#   cluster:
-#     enabled: true
-
-# Be default do not deploy freeradius.
-# freeradius:
-#   enabled: false
-# 
-# kafkaReleaseName: cord-kafka
-etcdReleaseName: etcd-cluster-client
-# 
-# loglevel: "WARN"
-
+# Define Docker images to be used
 images:
   vcli:
     repository: 'volthacore/voltha-cli'
     tag: '{{ .Chart.AppVersion }}'
-    pullPolicy: 'IfNotPresent'
+    pullPolicy: 'Always'
 
   ofagent:
     repository: 'volthacore/voltha-ofagent'
     tag: '{{ .Chart.AppVersion }}'
-    pullPolicy: 'IfNotPresent'
+    pullPolicy: 'Always'
  
   ro_core:
     repository: 'volthacore/voltha-ro-core'
     tag: '{{ .Chart.AppVersion }}'
-    pullPolicy: 'IfNotPresent'
+    pullPolicy: 'Always'
  
   rw_core:
     repository: 'volthacore/voltha-rw-core'
     tag: '{{ .Chart.AppVersion }}'
-    pullPolicy: 'IfNotPresent'
+    pullPolicy: 'Always'
  
   afrouter:
     repository: 'volthacore/voltha-afrouter'
     tag: '{{ .Chart.AppVersion }}'
-    pullPolicy: 'IfNotPresent'
+    pullPolicy: 'Always'
 
   afrouterd:
     repository: 'volthacore/voltha-afrouterd'
     tag: '{{ .Chart.AppVersion }}'
-    pullPolicy: 'IfNotPresent'
+    pullPolicy: 'Always'
     restartPolicy: 'Always'
 
   envoy:
     repository: 'volthacore/voltha-envoy'
     tag: '{{ .Chart.AppVersion }}'
-    pullPolicy: 'IfNotPresent'
+    pullPolicy: 'Always'
 
   adapter_simulated_olt:
     repository: 'volthacore/voltha-adapter-simulated-olt'
     tag: '{{ .Chart.AppVersion }}'
-    pullPolicy: 'IfNotPresent'
+    pullPolicy: 'Always'
 
   adapter_simulated_onu:
     repository: 'volthacore/voltha-adapter-simulated-onu'
     tag: '{{ .Chart.AppVersion }}'
-    pullPolicy: 'IfNotPresent'
+    pullPolicy: 'Always'
 
   onos:
     repository: 'volthacore/voltha-onos'
     tag: '1.13.5'
-    pullPolicy: 'IfNotPresent'
+    pullPolicy: 'Always'
 
   ponsim:
     repository: 'volthacore/voltha-ponsim'
     tag: '{{ .Chart.AppVersion }}'
-    pullPolicy: 'IfNotPresent'
+    pullPolicy: 'Always'
 
-#   netconf:
-#     repository: 'voltha/voltha-netconf'
-#     tag: '{{ .Chart.AppVersion }}'
-#     pullPolicy: 'Always'
-# 
-#   envoy_for_etcd:
-#     repository: 'voltha/voltha-envoy'
-#     tag: '{{ .Chart.AppVersion }}'
-#     pullPolicy: 'Always'
-# 
-#   alarm_generator:
-#     repository: 'voltha/voltha-alarm-generator'
-#     tag: '{{ .Chart.AppVersion }}'
-#     pullPolicy: 'Always'
-# 
-#   freeradius:
-#     repository: 'tpdock/freeradius'
-#     tag: '2.2.9'
-#     pullPolicy: 'Always'
-# 
-#   http_backend:
-#     repository: 'gcr.io/google_containers/defaultbackend'
-#     tag: '1.4'
-#     pullPolicy: 'Always'
-# 
-#   ingress_controller:
-#     repository: 'quay.io/kubernetes-ingress-controller/nginx-ingress-controller'
-#     tag: '0.10.2'
-#     pullPolicy: 'Always'
-# 
-#   ingress_controller_base:
-#     repository: 'alpine'
-#     tag: '3.6'
-#     pullPolicy: 'Always'
-
-# Need the namespace global for kafka
-global:
-  namespace: voltha
-  registry: ''
-
+# WIP Define command line arguments for each container
 vcli_args:
 - "/voltha/python/cli/setup.sh"
 - "-g afrouter.$(NAMESPACE).svc.cluster.local:55555"
@@ -187,8 +140,8 @@ ofagent_args:
 ro_core_args:
 - "/app/ro_core"
 - "-kv_store_type=etcd"
-- "-kv_store_host=etcd.$(NAMESPACE).svc.cluster.local"
-- "-kv_store_port=2379"
+- "-kv_store_host=$(ETCD_SERVICE)"
+- "-kv_store_port=$(ETCD_SERVICE_PORT)"
 - "-grpc_host=$(POD_IP)"
 - "-grpc_port=50057"
 - "-banner=true"
@@ -199,15 +152,15 @@ rw_core_args:
 - "/app/rw_core"
 - "-instance-id=$(RW_CORE_INSTANCE_ID)"
 - "-kv_store_type=etcd"
-- "-kv_store_host=etcd.$(NAMESPACE).svc.cluster.local"
-- "-kv_store_port=2379"
+- "-kv_store_host=$(ETCD_SERVICE)"
+- "-kv_store_port=$(ETCD_SERVICE_PORT)"
 - "-grpc_host=$(POD_IP)"
 - "-grpc_port=50057"
 - "-banner=true"
-- "-kafka_adapter_host=kafka.$(NAMESPACE).svc.cluster.local"
-- "-kafka_adapter_port=9092"
-- "-kafka_cluster_host=kafka.$(NAMESPACE).svc.cluster.local"
-- "-kafka_cluster_port=9092"
+- "-kafka_adapter_host=$(ADAPTER_KAFKA_SERVICE)"
+- "-kafka_adapter_port=$(ADAPTER_KAFKA_SERVICE_PORT)"
+- "-kafka_cluster_host=$(CLUSTER_KAFKA_SERVICE)"
+- "-kafka_cluster_port=$(CLUSTER_KAFKA_SERVICE_PORT)"
 - "-rw_core_topic=rwcore"
 - "-kv_store_data_prefix=service/voltha"
 - "-in_competing_mode=true"
@@ -223,27 +176,3 @@ afrouter_args:
 afrouterd_args:
 - "/app/arouterd"
 
-# "/cli/cli/setup.sh"
-#- "-C consul:8500"
-#- "-g voltha:50555"
-#- "-s voltha:18880"
-#- "-G"
-
-# 
-# netconf_args:
-# - "/netconf/netconf/main.py"
-# - "--consul=consul:8500"
-# - "--grpc-endpoint=voltha:50555"
-
-# set alarm_generator_enable to true to enable alarm generator container.
-# uncomment the intf_id and onu_id arguments if no olt is physically present, and a fake onu_id should be used.
-
-# alarm_generator_enable: false
-# alarm_generator_args:
-# - "--consul=consul:8500"
-# - "--grpc-endpoint=voltha:50555"
-# - "--global_request"
-# - "--rate=1"
-# - "--duration=2"
-# #- "--intf_id=0"
-# #- "--onu_id=00012bc90d6552dd"

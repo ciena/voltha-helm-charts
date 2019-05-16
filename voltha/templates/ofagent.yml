@@ -31,4 +31,4 @@ spec:
         - "/ofagent/ofagent/main.py"
         - "-v"
         - "--controller=$(CONTROLLER_SERVICE)"
-        - "--grpc-endpoint=afrouter.$(NAMESPACE).svc.cluster.local:55555"
+        - "--grpc-endpoint=voltha-api.$(NAMESPACE).svc.cluster.local:55555"

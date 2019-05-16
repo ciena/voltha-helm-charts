@@ -62,7 +62,7 @@ spec:
                   fieldPath: metadata.namespace
           args:
             - "/voltha/python/cli/setup.sh"
-            - "-g afrouter.$(NAMESPACE).svc.cluster.local:55555"
+            - "-g voltha-api.$(NAMESPACE).svc.cluster.local:55555"
           ports:
             - containerPort: 22
               name: ssh-port

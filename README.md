@@ -8,7 +8,7 @@ Follow the direction at https://github.com/ciena/voltha-access-edge, up to and i
 From there (after cloning this repo) do a 
 ```
 helm install --atomic --debug --name voltha <path-to-repo>/voltha-helm-charts/voltha
-helm install --atomic --denug --name adapters <path-to-repo>/voltha-helm-charts/voltha-adapter-simulated
+helm install --atomic --debug --name adapters <path-to-repo>/voltha-helm-charts/voltha-adapter-simulated
 ```
 
 ## Known issues

@@ -11,23 +11,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-apiVersion: v1
-kind: Service
-metadata:
-  name: ro-core
-  namespace: {{ .Values.global.namespace }}
-  serviceAccountName: {{ .Values.global.namespace }}-serviceaccount
-spec:
-  namespace: {{ .Values.global.namespace }}
-  serviceAccountName: {{ .Values.global.namespace }}-serviceaccount
-  clusterIP: None
-  ports:
-    - name: grpc
-      port: 50057
-      targetPort: 50057
-  selector:
-    app: ro-core
 ---
 apiVersion: apps/v1
 kind: Deployment

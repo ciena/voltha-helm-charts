@@ -41,11 +41,6 @@ controller:
 rw_core:
   pairs: 2
 
-# WIP Define the number of read-only core pairs
-# (Why are these pairs and not just replicas)
-ro_core:
-  pairs: 1
-
 # Define the recplica count for everything
 replicas:
   vcli: 1

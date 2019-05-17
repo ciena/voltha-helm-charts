@@ -1,7 +1,7 @@
 # Helm Charts to Deploy VOLTHA
 This is a WIP
 
-## Currently tested with
+## Installing charts
 
 Follow the direction at https://github.com/ciena/voltha-access-edge, up to and including the `make helm-onos` command. This basically follows the standard 1.x install.
 
@@ -9,6 +9,11 @@ From there (after cloning this repo) do a
 ```
 helm install --atomic --debug --name voltha <path-to-repo>/voltha-helm-charts/voltha
 helm install --atomic --debug --name adapters <path-to-repo>/voltha-helm-charts/voltha-adapter-simulated
+```
+
+## Delete VOLTHA charts
+```
+helm delete --purge adapters voltha
 ```
 
 ## Known issues

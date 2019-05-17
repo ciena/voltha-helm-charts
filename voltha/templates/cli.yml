@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -29,6 +30,7 @@ spec:
       targetPort: 22
   selector:
     app: vcli
+
 ---
 apiVersion: apps/v1beta1
 kind: Deployment
@@ -66,5 +68,3 @@ spec:
           ports:
             - containerPort: 22
               name: ssh-port
-
-

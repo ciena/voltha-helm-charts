@@ -11,8 +11,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
----
 
+---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -20,7 +20,6 @@ metadata:
   namespace: {{ .Values.global.namespace }}
 
 ---
-
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole
 metadata:
@@ -31,7 +30,6 @@ rules:
     verbs: ["get", "watch", "list"]
 
 ---
-
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: Role
 metadata:
@@ -46,7 +44,6 @@ rules:
     verbs: ["get", "update", "create"]
 
 ---
-
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: RoleBinding
 metadata:
@@ -62,7 +59,6 @@ subjects:
     namespace: {{ .Values.global.namespace }}
 
 ---
-
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding
 metadata:

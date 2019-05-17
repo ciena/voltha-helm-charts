@@ -11,6 +11,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+---
 {{- $rw_count := mul .Values.replicas.rw_core 2 | int }}
 {{- $ro_count := .Values.replicas.ro_core | int }}
 apiVersion: v1

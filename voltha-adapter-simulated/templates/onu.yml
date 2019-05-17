@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 ---
 apiVersion: v1
 kind: Service
@@ -26,6 +27,7 @@ spec:
       targetPort: 50061
   selector:
     app: onu
+
 ---
 apiVersion: apps/v1beta1
 kind: Deployment
@@ -73,6 +75,3 @@ spec:
            ports:
             - containerPort: 50061
               name: grpc-port
-
-       nodeSelector:
-         nodename: compute1

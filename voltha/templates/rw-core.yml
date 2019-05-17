@@ -11,15 +11,20 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+{{- $root := . -}}
+{{- $count := mul .Values.replicas.rw_core 2 | int }}
+{{- $tag := tpl .Values.images.rw_core.tag . }}
+{{- range $i, $e := until $count }}
+{{- $core_idx := add $i 1 }}
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: rw-core1
-  namespace: {{ .Values.global.namespace }}
-  serviceAccountName: {{ .Values.global.namespace }}-serviceaccount
+  name: rw-core{{ $core_idx }}
+  namespace: {{ $root.Values.global.namespace }}
+  serviceAccountName: {{ $root.Values.global.namespace }}-serviceaccount
 spec:
-  replicas: {{ .Values.replicas.rw_core }}
+  replicas: 1
   selector:
     matchLabels:
       app: rw-core
@@ -30,12 +35,12 @@ spec:
       annotations:
         cni: "calico"
     spec:
-      namespace: {{ .Values.global.namespace }}
-      serviceAccountName: {{ .Values.global.namespace }}-serviceaccount
+      namespace: {{ $root.Values.global.namespace }}
+      serviceAccountName: {{ $root.Values.global.namespace }}-serviceaccount
       containers:
         - name: voltha
-          image: {{ .Values.global.registry }}{{ .Values.images.rw_core.repository }}:{{ tpl .Values.images.rw_core.tag . }}
-          imagePullPolicy: {{ .Values.images.rw_core.pullPolicy }}
+          image: {{ $root.Values.global.registry }}{{ $root.Values.images.rw_core.repository }}:{{ $tag }}
+          imagePullPolicy: {{ $root.Values.images.rw_core.pullPolicy }}
           env:
             - name: NAMESPACE
               valueFrom:
@@ -46,20 +51,19 @@ spec:
                 fieldRef:
                   fieldPath: status.podIP
             - name: ETCD_SERVICE
-              value: "{{ .Values.etcd.service }}"
+              value: "{{ $root.Values.etcd.service }}"
             - name: ETCD_SERVICE_PORT
-              value: "{{ .Values.etcd.port }}"
+              value: "{{ $root.Values.etcd.port }}"
             - name: ADAPTER_KAFKA_SERVICE
-              value: "{{ .Values.kafka.adapter.service }}"
+              value: "{{ $root.Values.kafka.adapter.service }}"
             - name: ADAPTER_KAFKA_SERVICE_PORT
-              value: "{{ .Values.kafka.adapter.port }}"
+              value: "{{ $root.Values.kafka.adapter.port }}"
             - name: CLUSTER_KAFKA_SERVICE
-              value: "{{ .Values.kafka.cluster.service }}"
+              value: "{{ $root.Values.kafka.cluster.service }}"
             - name: CLUSTER_KAFKA_SERVICE_PORT
-              value: "{{ .Values.kafka.cluster.port }}"
+              value: "{{ $root.Values.kafka.cluster.port }}"
           args:
             - "/app/rw_core"
-            - "-instance-id=rw-core1"
             - "-kv_store_type=etcd"
             - "-kv_store_host=$(ETCD_SERVICE)"
             - "-kv_store_port=$(ETCD_SERVICE_PORT)"
@@ -79,8 +83,4 @@ spec:
           ports:
             - containerPort: 50057
               name: grpc-port
-      nodeSelector:
-        nodename: compute1
-
-
-
+{{end}}

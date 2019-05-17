@@ -11,6 +11,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+{{- $rw_count := mul .Values.replicas.rw_core 2 | int }}
+{{- $ro_count := .Values.replicas.ro_core | int }}
 apiVersion: v1
 data:
   arouter.voltha.json: |
@@ -137,8 +139,10 @@ data:
           {
             "name": "vcore",
             "backends": [
+{{- range $i, $e := until $rw_count }}
+{{- $core_idx := add $i 1 }}
               {
-                "name": "vcore1",
+                "name": "vcore{{ $core_idx }}",
                 "type": "active_active",
                 "association": {
                   "strategy": "serial_number",
@@ -148,99 +152,37 @@ data:
                 },
                 "connections": [
                   {
-                    "name": "vcore11",
+                    "name": "vcore{{ $core_idx }}1",
                     "addr": "",
                     "port": ""
                   },
                   {
-                    "name": "vcore12",
+                    "name": "vcore{{ $core_idx }}2",
                     "addr": "",
                     "port": ""
                   }
                 ]
-              },
-              {
-                "name": "vcore2",
-                "type": "active_active",
-                "association": {
-                  "strategy": "serial_number",
-                  "location": "header",
-                  "_TODO": "The key below needs to be implemented, currently hard coded",
-                  "key": "voltha_serial_number"
-                },
-                "connections": [
-                  {
-                    "name": "vcore21",
-                    "addr": "",
-                    "port": ""
-                  },
-                  {
-                    "name": "vcore22",
-                    "addr": "",
-                    "port": ""
-                  }
-                ]
-              },
-              {
-                "name": "vcore3",
-                "type": "active_active",
-                "association": {
-                  "strategy": "serial_number",
-                  "location": "header",
-                  "_TODO": "The key below needs to be implemented, currently hard coded",
-                  "key": "voltha_serial_number"
-                },
-                "connections": [
-                  {
-                    "name": "vcore31",
-                    "addr": "",
-                    "port": ""
-                  },
-                  {
-                    "name": "vcore32",
-                    "addr": "",
-                    "port": ""
-                  }
-                ]
-              }
+              }{{ if lt $core_idx $rw_count }},{{ end }}
+{{- end}}
             ]
           },
           {
             "name": "ro_vcore",
             "backends": [
+{{- range $i, $e := until $ro_count }}
+{{- $core_idx := add $i 1 }}
               {
-                "name": "ro_vcore1",
+                "name": "ro_vcore{{ $core_idx }}",
                 "type": "server",
                 "connections": [
                   {
-                    "name": "ro_vcore11",
+                    "name": "ro_vcore{{ $core_idx }}1",
                     "addr": "",
                     "port": ""
                   }
                 ]
-              },
-              {
-                "name": "ro_vcore2",
-                "type": "server",
-                "connections": [
-                  {
-                    "name": "ro_vcore21",
-                    "addr": "",
-                    "port": ""
-                  }
-                ]
-              },
-              {
-                "name": "ro_vcore3",
-                "type": "server",
-                "connections": [
-                  {
-                    "name": "ro_vcore31",
-                    "addr": "",
-                    "port": ""
-                  }
-                ]
-              }
+              }{{ if lt $core_idx $ro_count }},{{ end }}
+{{- end}}
             ]
           }
         ],

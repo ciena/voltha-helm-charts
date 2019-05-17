@@ -11,6 +11,34 @@ helm install --atomic --debug --name voltha <path-to-repo>/voltha-helm-charts/vo
 helm install --atomic --debug --name adapters <path-to-repo>/voltha-helm-charts/voltha-adapter-simulated
 ```
 
+### Configuring the number of R/O and R/W cores
+By default the charts will create one (1) R/O and two (2) R/W cores. This can be configured by overriding two values 
+- `replicas.ro_core` specifies the number of R/O core replicas, just like normal
+- `replicas.rw_core` specifies the number of **pairs** of R/W cores, so a value of one (1) gets you one (1) pair which is two (2) instances. A value of two (2) gets you two (2) pairs which is four (4) instances.
+
+### External dependencies
+VOLTHA expects a `kafka` and `etcd` cluster to exist (it actually starts the etcd-cluster). These external dependencies can be configured for a specific deployment by overriding the values below.
+```
+# Define connectivity to Kafka
+kafka:
+  adapter:
+    service: cord-kafka.default.svc.cluster.local
+    port: 9092
+  cluster:
+    service: cord-kafka.default.svc.cluster.local
+    port: 9092
+
+# Define connectivity to etcd
+etcd:
+  service: etcd-cluster-client.default.svc.cluster.local
+  port: 2379
+
+# Define controller to which to connect
+controller:
+  service: onos-openflow.default.svc.cluster.local
+  port: 6653
+```
+
 ## Delete VOLTHA charts
 ```
 helm delete --purge adapters voltha

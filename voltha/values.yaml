@@ -37,15 +37,15 @@ controller:
   service: onos-openflow.default.svc.cluster.local
   port: 6653
 
-# WIP Define the number of read/write core pairs
-rw_core:
-  pairs: 2
-
 # Define the recplica count for everything
 replicas:
+  # For R/W cores the templates translate the number of replicas
+  # into the number of RW core pairs with two pods per pair
+  rw_core: 1
+
+  # For everything else replicas are replicas
   vcli: 1
   ofagent: 1
-  rw_core: 1
   ro_core: 1
   afrouter: 1
   afrouterd: 1

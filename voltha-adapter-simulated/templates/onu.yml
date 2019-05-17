@@ -17,7 +17,6 @@ kind: Service
 metadata:
   name: onu
   namespace: {{ .Values.global.namespace }}
-  serviceAccountName: {{ .Values.global.namespace }}-serviceaccount
   labels:
     name: onu
 spec:
@@ -33,7 +32,6 @@ kind: Deployment
 metadata:
   name: onu
   namespace: {{ .Values.global.namespace }}
-  serviceAccountName: {{ .Values.global.namespace }}-serviceaccount
 spec:
    replicas: {{ .Values.replicas.onu }}
    template:
@@ -44,7 +42,6 @@ spec:
          cni: "calico,pon0"
      spec:
        namespace: {{ .Values.global.namespace }}
-       serviceAccountName: {{ .Values.global.namespace }}-serviceaccount
        containers:
          - name: onu
            image: {{ .Values.global.registry }}{{ .Values.images.ponsim.repository }}:{{ tpl .Values.images.ponsim.tag . }}

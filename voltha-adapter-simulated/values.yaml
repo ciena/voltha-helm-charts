@@ -15,7 +15,7 @@
 
 # Globally define a namespace and registry
 global:
-  namespace: voltha
+  namespace: voltha-adapter
   registry: ''
 
 # Define connectivity to Kafka
@@ -32,61 +32,24 @@ etcd:
   service: etcd-cluster-client.default.svc.cluster.local
   port: 2379
 
-# Define controller to which to connect
-controller:
-  service: onos-openflow.default.svc.cluster.local
-  port: 6653
-
-# WIP Define the number of read/write core pairs
-rw_core:
-  pairs: 2
-
-# WIP Define the number of read-only core pairs
-# (Why are these pairs and not just replicas)
-ro_core:
-  pairs: 1
-
 # Define the recplica count for everything
 replicas:
-  vcli: 1
-  ofagent: 1
-  rw_core: 1
-  ro_core: 1
-  afrouter: 1
-  afrouterd: 1
+  adapter_simulated_olt: 1
+  adapter_simulated_onu: 1
+  onu: 1
 
-node_ports:
-  vcli_port: 30110
-
-# Define Docker images to be used
 images:
-  vcli:
-    repository: 'volthacore/voltha-cli'
+  adapter_simulated_olt:
+    repository: 'volthacore/voltha-adapter-simulated-olt'
     tag: '{{ .Chart.AppVersion }}'
     pullPolicy: 'Always'
 
-  ofagent:
-    repository: 'volthacore/voltha-ofagent'
-    tag: '{{ .Chart.AppVersion }}'
-    pullPolicy: 'Always'
- 
-  ro_core:
-    repository: 'volthacore/voltha-ro-core'
-    tag: '{{ .Chart.AppVersion }}'
-    pullPolicy: 'Always'
- 
-  rw_core:
-    repository: 'volthacore/voltha-rw-core'
-    tag: '{{ .Chart.AppVersion }}'
-    pullPolicy: 'Always'
- 
-  afrouter:
-    repository: 'volthacore/voltha-afrouter'
+  adapter_simulated_onu:
+    repository: 'volthacore/voltha-adapter-simulated-onu'
     tag: '{{ .Chart.AppVersion }}'
     pullPolicy: 'Always'
 
-  afrouterd:
-    repository: 'volthacore/voltha-afrouterd'
+  ponsim:
+    repository: 'volthacore/voltha-ponsim'
     tag: '{{ .Chart.AppVersion }}'
     pullPolicy: 'Always'
-    restartPolicy: 'Always'

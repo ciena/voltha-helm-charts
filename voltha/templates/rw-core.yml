@@ -17,6 +17,7 @@
 {{- $tag := tpl .Values.images.rw_core.tag . }}
 {{- range $i, $e := until $count }}
 {{- $core_idx := add $i 1 }}
+{{- $pair_idx := div $i 2 | int }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -33,9 +34,20 @@ spec:
     metadata:
       labels:
         app: rw-core
+        affinity-index: anti-affinity-{{ $pair_idx }}
       annotations:
         cni: "calico"
     spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: affinity-index
+                operator: In
+                values:
+                - anti-affinity-{{ $pair_idx }}
+            topologyKey: "kubernetes.io/hostname"
       namespace: {{ $root.Values.global.namespace }}
       serviceAccountName: {{ $root.Values.global.namespace }}-serviceaccount
       containers:

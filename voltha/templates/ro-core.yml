@@ -31,6 +31,18 @@ spec:
       annotations:
         cni: "calico"
     spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - ro-core
+              topologyKey: "kubernetes.io/hostname"
       namespace: {{ .Values.global.namespace }}
       serviceAccountName: {{ .Values.global.namespace }}-serviceaccount
       containers:

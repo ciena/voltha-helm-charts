@@ -17,9 +17,8 @@ apiVersion: v1
 kind: Service
 metadata:
   name: adapter-simulated-olt
-  namespace: {{ .Values.global.namespace }}
+  namespace: {{ .Release.Namespace }}
 spec:
-  namespace: {{ .Values.global.namespace }}
   clusterIP: None
   selector:
     app: adapter-simulated-olt
@@ -29,7 +28,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: adapter-simulated-olt
-  namespace: {{ .Values.global.namespace }}
+  namespace: {{ .Release.Namespace }}
 spec:
   replicas: {{ .Values.replicas.adapter_simulated_olt }}
   selector:
@@ -42,28 +41,25 @@ spec:
       annotations:
         cni: "calico"
     spec:
-      namespace: {{ .Values.global.namespace }}
       containers:
         - name: adapter-simulated-olt
           image: {{ .Values.global.registry }}{{ .Values.images.adapter_simulated_olt.repository }}:{{ tpl .Values.images.adapter_simulated_olt.tag . }}
           imagePullPolicy: {{ .Values.images.adapter_simulated_olt.pullPolicy }}
           env:
             - name: NAMESPACE
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.namespace
+              value: {{ quote .Release.Namespace }}
             - name: ETCD_SERVICE
               value: "{{ .Values.etcd.service }}"
             - name: ETCD_SERVICE_PORT
               value: "{{ .Values.etcd.port }}"
             - name: ADAPTER_KAFKA_SERVICE
-              value: "{{ .Values.kafka.adapter.service }}"
+              value: "{{ .Values.message.adapter.service }}"
             - name: ADAPTER_KAFKA_SERVICE_PORT
-              value: "{{ .Values.kafka.adapter.port }}"
+              value: "{{ .Values.message.adapter.port }}"
             - name: CLUSTER_KAFKA_SERVICE
-              value: "{{ .Values.kafka.cluster.service }}"
+              value: "{{ .Values.message.cluster.service }}"
             - name: CLUSTER_KAFKA_SERVICE_PORT
-              value: "{{ .Values.kafka.cluster.port }}"
+              value: "{{ .Values.message.cluster.port }}"
           args:
             - "/app/simulated_olt"
             - "-kafka_adapter_host=$(ADAPTER_KAFKA_SERVICE)"
@@ -80,9 +76,8 @@ apiVersion: v1
 kind: Service
 metadata:
   name: adapter-simulated-onu
-  namespace: {{ .Values.global.namespace }}
+  namespace: {{ .Release.Namespace }}
 spec:
-  namespace: {{ .Values.global.namespace }}
   clusterIP: None
   selector:
     app: adapter-simulated-onu
@@ -92,7 +87,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: adapter-simulated-onu
-  namespace: {{ .Values.global.namespace }}
+  namespace: {{ .Release.Namespace }}
 spec:
   replicas: {{ .Values.replicas.adapter_simulated_onu }}
   selector:
@@ -105,28 +100,25 @@ spec:
       annotations:
         cni: "calico"
     spec:
-      namespace: {{ .Values.global.namespace }}
       containers:
         - name: adapter-simulated-onu
           image: {{ .Values.global.registry }}{{ .Values.images.adapter_simulated_onu.repository }}:{{ tpl .Values.images.adapter_simulated_onu.tag . }}
           imagePullPolicy: {{ .Values.images.adapter_simulated_onu.pullPolicy }}
           env:
             - name: NAMESPACE
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.namespace
+              value: {{ quote .Release.Namespace }}
             - name: ETCD_SERVICE
               value: "{{ .Values.etcd.service }}"
             - name: ETCD_SERVICE_PORT
               value: "{{ .Values.etcd.port }}"
             - name: ADAPTER_KAFKA_SERVICE
-              value: "{{ .Values.kafka.adapter.service }}"
+              value: "{{ .Values.message.adapter.service }}"
             - name: ADAPTER_KAFKA_SERVICE_PORT
-              value: "{{ .Values.kafka.adapter.port }}"
+              value: "{{ .Values.message.adapter.port }}"
             - name: CLUSTER_KAFKA_SERVICE
-              value: "{{ .Values.kafka.cluster.service }}"
+              value: "{{ .Values.message.cluster.service }}"
             - name: CLUSTER_KAFKA_SERVICE_PORT
-              value: "{{ .Values.kafka.cluster.port }}"
+              value: "{{ .Values.message.cluster.port }}"
           args:
             - "/app/simulated_onu"
             - "-kafka_adapter_host=$(ADAPTER_KAFKA_SERVICE)"

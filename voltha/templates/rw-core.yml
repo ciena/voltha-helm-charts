@@ -23,8 +23,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: rw-core{{ $core_idx }}
-  namespace: {{ $root.Values.global.namespace }}
-  serviceAccountName: {{ $root.Values.global.namespace }}-serviceaccount
+  serviceAccountName: {{ $root.Values.serviceaccount }}
 spec:
   replicas: 1
   selector:
@@ -48,33 +47,30 @@ spec:
                 values:
                 - anti-affinity-{{ $pair_idx }}
             topologyKey: "kubernetes.io/hostname"
-      namespace: {{ $root.Values.global.namespace }}
-      serviceAccountName: {{ $root.Values.global.namespace }}-serviceaccount
+      serviceAccountName: {{ $root.Values.serviceaccount }}
       containers:
         - name: voltha
-          image: {{ $root.Values.global.registry }}{{ $root.Values.images.rw_core.repository }}:{{ $tag }}
+          image: {{ $root.Values.registry }}{{ $root.Values.images.rw_core.repository }}:{{ $tag }}
           imagePullPolicy: {{ $root.Values.images.rw_core.pullPolicy }}
           env:
             - name: NAMESPACE
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.namespace
+              value: {{ quote $root.Release.Namespace }}
             - name: POD_IP
               valueFrom:
                 fieldRef:
                   fieldPath: status.podIP
             - name: ETCD_SERVICE
-              value: "{{ $root.Values.etcd.service }}"
+              value: {{ quote $root.Values.etcd.service }}
             - name: ETCD_SERVICE_PORT
-              value: "{{ $root.Values.etcd.port }}"
+              value: {{ quote $root.Values.etcd.port }}
             - name: ADAPTER_KAFKA_SERVICE
-              value: "{{ $root.Values.kafka.adapter.service }}"
+              value: {{ quote $root.Values.message.adapter.service }}
             - name: ADAPTER_KAFKA_SERVICE_PORT
-              value: "{{ $root.Values.kafka.adapter.port }}"
+              value: {{ quote $root.Values.message.adapter.port }}
             - name: CLUSTER_KAFKA_SERVICE
-              value: "{{ $root.Values.kafka.cluster.service }}"
+              value: {{ quote $root.Values.message.cluster.service }}
             - name: CLUSTER_KAFKA_SERVICE_PORT
-              value: "{{ $root.Values.kafka.cluster.port }}"
+              value: {{ quote $root.Values.message.cluster.port }}
           args:
             - "/app/rw_core"
             - "-kv_store_type=etcd"

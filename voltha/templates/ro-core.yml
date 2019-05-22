@@ -17,8 +17,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ro-core
-  namespace: {{ .Values.global.namespace }}
-  serviceAccountName: {{ .Values.global.namespace }}-serviceaccount
+  serviceAccountName: {{ .Values.serviceaccount }}
 spec:
   replicas: {{ .Values.replicas.ro_core }}
   selector:
@@ -43,25 +42,22 @@ spec:
                   values:
                   - ro-core
               topologyKey: "kubernetes.io/hostname"
-      namespace: {{ .Values.global.namespace }}
-      serviceAccountName: {{ .Values.global.namespace }}-serviceaccount
+      serviceAccountName: {{ .Values.serviceaccount }}
       containers:
         - name: voltha
-          image: {{ .Values.global.registry }}{{ .Values.images.ro_core.repository }}:{{ tpl .Values.images.ro_core.tag . }}
+          image: {{ .Values.registry }}{{ .Values.images.ro_core.repository }}:{{ tpl .Values.images.ro_core.tag . }}
           imagePullPolicy: {{ .Values.images.ro_core.pullPolicy }}
           env:
             - name: NAMESPACE
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.namespace
+              value: {{ quote .Release.Namespace }}
             - name: POD_IP
               valueFrom:
                 fieldRef:
                   fieldPath: status.podIP
             - name: ETCD_SERVICE
-              value: "{{ .Values.etcd.service }}"
+              value: {{ quote .Values.etcd.service }}
             - name: ETCD_SERVICE_PORT
-              value: "{{ .Values.etcd.port }}"
+              value: {{ quote .Values.etcd.port }}
           args:
             - "/app/ro_core"
             - "-kv_store_type=etcd"

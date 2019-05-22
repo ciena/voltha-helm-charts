@@ -17,13 +17,11 @@ apiVersion: v1
 kind: Service
 metadata:
   name: vcli
-  namespace: {{ .Values.global.namespace }}
-  serviceAccountName: {{ .Values.global.namespace }}-serviceaccount
+  serviceAccountName: {{ .Values.serviceaccount }}
   labels:
     name: vcli
 spec:
-  namespace: {{ .Values.global.namespace }}
-  serviceAccountName: {{ .Values.global.namespace }}-serviceaccount
+  serviceAccountName: {{ .Values.serviceaccount }}
   ports:
     - name: ssh
       port: 5022
@@ -36,8 +34,7 @@ apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
   name: vcli
-  namespace: {{ .Values.global.namespace }}
-  serviceAccountName: {{ .Values.global.namespace }}-serviceaccount
+  serviceAccountName: {{ .Values.serviceaccount }}
 spec:
   replicas: {{ .Values.replicas.vcli }}
   template:
@@ -47,24 +44,19 @@ spec:
       annotations:
         cni: "calico"
     spec:
-      namespace: {{ .Values.global.namespace }}
-      serviceAccountName: {{ .Values.global.namespace }}-serviceaccount
+      serviceAccountName: {{ .Values.serviceaccount }}
       containers:
         - name: vcli
-          image: {{ .Values.global.registry }}{{ .Values.images.vcli.repository }}:{{ tpl .Values.images.vcli.tag . }}
+          image: {{ .Values.registry }}{{ .Values.images.vcli.repository }}:{{ tpl .Values.images.vcli.tag . }}
           imagePullPolicy: {{ .Values.images.vcli.pullPolicy }}
           env:
             - name: POD_IP
               valueFrom:
                 fieldRef:
                   fieldPath: status.podIP
-            - name: NAMESPACE
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.namespace
           args:
             - "/voltha/python/cli/setup.sh"
-            - "-g voltha-api.$(NAMESPACE).svc.cluster.local:55555"
+            - "-g voltha-api.{{ .Release.Namespace }}.svc.cluster.local:55555"
           ports:
             - containerPort: 22
               name: ssh-port

@@ -17,8 +17,7 @@ apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
   name: ofagent
-  namespace: {{ .Values.global.namespace }}
-  serviceAccountName: {{ .Values.global.namespace }}-serviceaccount
+  serviceAccountName: {{ .Values.serviceaccount }}
 spec:
   replicas: {{ .Values.replicas.ofagent }}
   template:
@@ -29,21 +28,16 @@ spec:
         cni: "calico"
     spec:
       terminationGracePeriodSeconds: 10
-      namespace: {{ .Values.global.namespace }}
-      serviceAccountName: {{ .Values.global.namespace }}-serviceaccount
+      serviceAccountName: {{ .Values.serviceaccount }}
       containers:
       - name: ofagent
-        image: {{ .Values.global.registry }}{{ .Values.images.ofagent.repository }}:{{ tpl .Values.images.ofagent.tag . }}
+        image: {{ .Values.registry }}{{ .Values.images.ofagent.repository }}:{{ tpl .Values.images.ofagent.tag . }}
         imagePullPolicy: {{ .Values.images.ofagent.pullPolicy }}
         env:
-        - name: NAMESPACE
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.namespace
         - name: CONTROLLER_SERVICE
           value: "{{ .Values.controller.service }}:{{ .Values.controller.port }}"
         args:
         - "/ofagent/ofagent/main.py"
         - "-v"
         - "--controller=$(CONTROLLER_SERVICE)"
-        - "--grpc-endpoint=voltha-api.$(NAMESPACE).svc.cluster.local:55555"
+        - "--grpc-endpoint=voltha-api.{{ .Release.Namespace }}.svc.cluster.local:55555"

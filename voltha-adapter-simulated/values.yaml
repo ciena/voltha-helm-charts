@@ -15,21 +15,20 @@
 ---
 # Globally define a namespace and registry
 global:
-  namespace: voltha-adapter
   registry: ''
 
 # Define connectivity to Kafka
-kafka:
+message:
   adapter:
-    service: cord-kafka.default.svc.cluster.local
+    service: voltha-kafka.voltha.svc.cluster.local
     port: 9092
   cluster:
-    service: cord-kafka.default.svc.cluster.local
+    service: voltha-kafka.voltha.svc.cluster.local
     port: 9092
 
 # Define connectivity to etcd
 etcd:
-  service: etcd-cluster-client.default.svc.cluster.local
+  service: voltha-etcd-cluster-client.voltha.svc.cluster.local
   port: 2379
 
 # Define the recplica count for everything

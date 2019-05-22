@@ -149,3 +149,15 @@ Before scaling back to `1` be sure the current instance is gone using `kubectl g
 Known VOLTHA issues are tracked in [JIRA](https://jira.opencord.org). Issues that may specifically
 be observed, or at the very least were discovered, in this environment can be found in JIRA via a
 [JIRA Issue Search](https://jira.opencord.org/issues/?jql=status%20not%20in%20%28closed%2C%20Done%2CResolved%29%20and%20labels%20in%20%28helm%29%20and%20affectedVersion%20in%20%28%22VOLTHA%20v2.0%22%29).
+
+## Pre-patchset submission Checks
+On patchset submission, jobs are run in Jenkins that validate the correctness
+of the helm charts.
+
+The code for these jobs can be found in
+[helm-repo-tools](http://gerrit.opencord.org/helm-repo-tools)
+
+The two scripts that should be run to test are:
+
+ - `helmlint.sh`
+ - `chart_version_check.sh`

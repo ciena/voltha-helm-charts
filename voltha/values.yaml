@@ -30,7 +30,7 @@ kafka:
     replicaCount: 1
     persistence:
       enabled: false
-  replicas: 3
+  replicas: 1
 
 # Define connectivity to services on which VOLTHA depends
 services:
@@ -59,18 +59,15 @@ replicas:
   rw_core: 1
 
   # For everything else replicas are replicas
-  vcli: 1
+  cli: 1
   ofagent: 1
   ro_core: 1
   afrouter: 1
   afrouterd: 1
 
-node_ports:
-  vcli_port: 30110
-
 # Define Docker images to be used
 images:
-  vcli:
+  cli:
     repository: 'volthacore/voltha-cli'
     tag: '{{ .Chart.AppVersion }}'
     pullPolicy: 'Always'

@@ -12,11 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+{{- if .Values.replicas.cli }}
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: vcli
+  name: voltha-cli
   serviceAccountName: {{ .Values.serviceaccount }}
   labels:
     name: vcli
@@ -33,10 +34,10 @@ spec:
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
-  name: vcli
+  name: voltha-cli-server
   serviceAccountName: {{ .Values.serviceaccount }}
 spec:
-  replicas: {{ .Values.replicas.vcli }}
+  replicas: {{ .Values.replicas.cli }}
   template:
     metadata:
       labels:
@@ -47,8 +48,8 @@ spec:
       serviceAccountName: {{ .Values.serviceaccount }}
       containers:
         - name: vcli
-          image: {{ .Values.registry }}{{ .Values.images.vcli.repository }}:{{ tpl .Values.images.vcli.tag . }}
-          imagePullPolicy: {{ .Values.images.vcli.pullPolicy }}
+          image: {{ .Values.registry }}{{ .Values.images.cli.repository }}:{{ tpl .Values.images.cli.tag . }}
+          imagePullPolicy: {{ .Values.images.cli.pullPolicy }}
           env:
             - name: POD_IP
               valueFrom:
@@ -60,3 +61,4 @@ spec:
           ports:
             - containerPort: 22
               name: ssh-port
+{{- end}}

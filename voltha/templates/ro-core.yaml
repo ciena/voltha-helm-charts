@@ -55,9 +55,9 @@ spec:
                 fieldRef:
                   fieldPath: status.podIP
             - name: ETCD_SERVICE
-              value: {{ quote .Values.etcd.service }}
+              value: {{ quote .Values.services.etcd.service }}
             - name: ETCD_SERVICE_PORT
-              value: {{ quote .Values.etcd.port }}
+              value: {{ quote .Values.services.etcd.port }}
           args:
             - "/app/ro_core"
             - "-kv_store_type=etcd"

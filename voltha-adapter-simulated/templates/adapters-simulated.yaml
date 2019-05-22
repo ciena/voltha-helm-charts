@@ -43,23 +43,23 @@ spec:
     spec:
       containers:
         - name: adapter-simulated-olt
-          image: {{ .Values.global.registry }}{{ .Values.images.adapter_simulated_olt.repository }}:{{ tpl .Values.images.adapter_simulated_olt.tag . }}
+          image: {{ .Values.registry }}{{ .Values.images.adapter_simulated_olt.repository }}:{{ tpl .Values.images.adapter_simulated_olt.tag . }}
           imagePullPolicy: {{ .Values.images.adapter_simulated_olt.pullPolicy }}
           env:
             - name: NAMESPACE
               value: {{ quote .Release.Namespace }}
             - name: ETCD_SERVICE
-              value: "{{ .Values.etcd.service }}"
+              value: "{{ .Values.services.etcd.service }}"
             - name: ETCD_SERVICE_PORT
-              value: "{{ .Values.etcd.port }}"
+              value: "{{ .Values.services.etcd.port }}"
             - name: ADAPTER_KAFKA_SERVICE
-              value: "{{ .Values.message.adapter.service }}"
+              value: "{{ .Values.services.kafka.adapter.service }}"
             - name: ADAPTER_KAFKA_SERVICE_PORT
-              value: "{{ .Values.message.adapter.port }}"
+              value: "{{ .Values.services.kafka.adapter.port }}"
             - name: CLUSTER_KAFKA_SERVICE
-              value: "{{ .Values.message.cluster.service }}"
+              value: "{{ .Values.services.kafka.cluster.service }}"
             - name: CLUSTER_KAFKA_SERVICE_PORT
-              value: "{{ .Values.message.cluster.port }}"
+              value: "{{ .Values.services.kafka.cluster.port }}"
           args:
             - "/app/simulated_olt"
             - "-kafka_adapter_host=$(ADAPTER_KAFKA_SERVICE)"
@@ -102,23 +102,23 @@ spec:
     spec:
       containers:
         - name: adapter-simulated-onu
-          image: {{ .Values.global.registry }}{{ .Values.images.adapter_simulated_onu.repository }}:{{ tpl .Values.images.adapter_simulated_onu.tag . }}
+          image: {{ .Values.registry }}{{ .Values.images.adapter_simulated_onu.repository }}:{{ tpl .Values.images.adapter_simulated_onu.tag . }}
           imagePullPolicy: {{ .Values.images.adapter_simulated_onu.pullPolicy }}
           env:
             - name: NAMESPACE
               value: {{ quote .Release.Namespace }}
             - name: ETCD_SERVICE
-              value: "{{ .Values.etcd.service }}"
+              value: "{{ .Values.services.etcd.service }}"
             - name: ETCD_SERVICE_PORT
-              value: "{{ .Values.etcd.port }}"
+              value: "{{ .Values.services.etcd.port }}"
             - name: ADAPTER_KAFKA_SERVICE
-              value: "{{ .Values.message.adapter.service }}"
+              value: "{{ .Values.services.kafka.adapter.service }}"
             - name: ADAPTER_KAFKA_SERVICE_PORT
-              value: "{{ .Values.message.adapter.port }}"
+              value: "{{ .Values.services.kafka.adapter.port }}"
             - name: CLUSTER_KAFKA_SERVICE
-              value: "{{ .Values.message.cluster.service }}"
+              value: "{{ .Values.services.kafka.cluster.service }}"
             - name: CLUSTER_KAFKA_SERVICE_PORT
-              value: "{{ .Values.message.cluster.port }}"
+              value: "{{ .Values.services.kafka.cluster.port }}"
           args:
             - "/app/simulated_onu"
             - "-kafka_adapter_host=$(ADAPTER_KAFKA_SERVICE)"

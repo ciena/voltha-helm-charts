@@ -16,6 +16,7 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+registry: ""
 clusterName: "voltha-etcd-cluster"
 clusterSize: 3
 memoryLimit: 1024Mi
@@ -33,5 +34,3 @@ images:
     repository: "busybox"
     tag: "1.28.1-glibc"
 
-global:
-  registry: ""

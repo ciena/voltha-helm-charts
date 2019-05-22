@@ -35,7 +35,7 @@ spec:
         imagePullPolicy: {{ .Values.images.ofagent.pullPolicy }}
         env:
         - name: CONTROLLER_SERVICE
-          value: "{{ .Values.controller.service }}:{{ .Values.controller.port }}"
+          value: "{{ .Values.services.controller.service }}:{{ .Values.services.controller.port }}"
         args:
         - "/ofagent/ofagent/main.py"
         - "-v"

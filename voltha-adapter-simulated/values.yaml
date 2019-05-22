@@ -13,23 +13,23 @@
 # limitations under the License.
 
 ---
-# Globally define a namespace and registry
-global:
-  registry: ''
+# Globally define a registry
+registry: ''
 
-# Define connectivity to Kafka
-message:
-  adapter:
-    service: voltha-kafka.voltha.svc.cluster.local
-    port: 9092
-  cluster:
-    service: voltha-kafka.voltha.svc.cluster.local
-    port: 9092
-
-# Define connectivity to etcd
-etcd:
-  service: voltha-etcd-cluster-client.voltha.svc.cluster.local
-  port: 2379
+# Define connectivity to required services
+services:
+  kafka:
+    adapter:
+      service: voltha-kafka.voltha.svc.cluster.local
+      port: 9092
+    cluster:
+      service: voltha-kafka.voltha.svc.cluster.local
+      port: 9092
+  
+  # Define connectivity to etcd
+  etcd:
+    service: voltha-etcd-cluster-client.voltha.svc.cluster.local
+    port: 2379
 
 # Define the recplica count for everything
 replicas:

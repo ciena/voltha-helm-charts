@@ -60,17 +60,17 @@ spec:
                 fieldRef:
                   fieldPath: status.podIP
             - name: ETCD_SERVICE
-              value: {{ quote $root.Values.etcd.service }}
+              value: {{ quote $root.Values.services.etcd.service }}
             - name: ETCD_SERVICE_PORT
-              value: {{ quote $root.Values.etcd.port }}
+              value: {{ quote $root.Values.services.etcd.port }}
             - name: ADAPTER_KAFKA_SERVICE
-              value: {{ quote $root.Values.message.adapter.service }}
+              value: {{ quote $root.Values.services.kafka.adapter.service }}
             - name: ADAPTER_KAFKA_SERVICE_PORT
-              value: {{ quote $root.Values.message.adapter.port }}
+              value: {{ quote $root.Values.services.kafka.adapter.port }}
             - name: CLUSTER_KAFKA_SERVICE
-              value: {{ quote $root.Values.message.cluster.service }}
+              value: {{ quote $root.Values.services.kafka.cluster.service }}
             - name: CLUSTER_KAFKA_SERVICE_PORT
-              value: {{ quote $root.Values.message.cluster.port }}
+              value: {{ quote $root.Values.services.kafka.cluster.port }}
           args:
             - "/app/rw_core"
             - "-kv_store_type=etcd"

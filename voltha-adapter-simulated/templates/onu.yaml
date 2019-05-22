@@ -43,7 +43,7 @@ spec:
      spec:
        containers:
          - name: onu
-           image: {{ .Values.global.registry }}{{ .Values.images.ponsim.repository }}:{{ tpl .Values.images.ponsim.tag . }}
+           image: {{ .Values.registry }}{{ .Values.images.ponsim.repository }}:{{ tpl .Values.images.ponsim.tag . }}
            imagePullPolicy: {{ .Values.images.ponsim.pullPolicy }}
            env:
              - name: POD_IP
